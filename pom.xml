@@ -3,10 +3,43 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <name>Java JSON Schema Generator Module – Addon</name>
+    <description>Module for the jsonschema-generator – deriving JSON Schema attributes from annotations</description>
+    <url>https://github.com/imIfOu/jsonschema-module-addon</url>
 
     <groupId>com.github.imifou</groupId>
     <artifactId>jsonschema-module-addon</artifactId>
     <version>1.0-SNAPSHOT</version>
+    
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/imIfOu/jsonschema-module-addon/issues</url>
+    </issueManagement>
+         
+    <scm>
+        <connection>scm:git:ssh://github.com/imIfOu/jsonschema-module-addon.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/imIfOu/jsonschema-module-addon.git</developerConnection>
+        <url>https://github.com/imIfOu/jsonschema-module-addonn</url>
+        <tag>HEAD</tag>
+    </scm>
+    
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
