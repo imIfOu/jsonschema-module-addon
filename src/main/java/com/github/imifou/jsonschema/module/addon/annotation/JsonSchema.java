@@ -60,6 +60,21 @@ public @interface JsonSchema {
     boolean exclusiveMax() default false;
 
     /**
+     * Minimum length for String properties
+     */
+    int minLength() default 0;
+
+    /**
+     * Maximum length for String properties
+     */
+    int maxLength() default Integer.MAX_VALUE;
+
+    /**
+     * Pattern for String properties
+     */
+    String pattern() default "";
+
+    /**
      * Required properties, properties can't be null
      */
     boolean required() default false;

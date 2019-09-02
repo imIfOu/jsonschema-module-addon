@@ -6,12 +6,15 @@ import com.github.imifou.jsonschema.module.addon.mock.TestClassForResolveDefault
 import com.github.imifou.jsonschema.module.addon.mock.TestClassForResolveDescription;
 import com.github.imifou.jsonschema.module.addon.mock.TestClassForResolveFormat;
 import com.github.imifou.jsonschema.module.addon.mock.TestClassForResolveIgnore;
+import com.github.imifou.jsonschema.module.addon.mock.TestClassForResolveMaxLength;
 import com.github.imifou.jsonschema.module.addon.mock.TestClassForResolveMaximum;
 import com.github.imifou.jsonschema.module.addon.mock.TestClassForResolveMaximumExclusive;
 import com.github.imifou.jsonschema.module.addon.mock.TestClassForResolveMetadata;
+import com.github.imifou.jsonschema.module.addon.mock.TestClassForResolveMinLength;
 import com.github.imifou.jsonschema.module.addon.mock.TestClassForResolveMinimum;
 import com.github.imifou.jsonschema.module.addon.mock.TestClassForResolveMinimumExclusive;
 import com.github.imifou.jsonschema.module.addon.mock.TestClassForResolveMultipleOf;
+import com.github.imifou.jsonschema.module.addon.mock.TestClassForResolvePattern;
 import com.github.imifou.jsonschema.module.addon.mock.TestClassForResolveRequired;
 import com.github.imifou.jsonschema.module.addon.mock.TestClassForResolveTitle;
 import com.github.victools.jsonschema.generator.ConfigFunction;
@@ -75,6 +78,9 @@ public class AddonModuleTest {
         Mockito.verify(this.fieldConfigPart).withNumberInclusiveMaximumResolver(Mockito.any());
         Mockito.verify(this.fieldConfigPart).withNumberExclusiveMinimumResolver(Mockito.any());
         Mockito.verify(this.fieldConfigPart).withNumberExclusiveMaximumResolver(Mockito.any());
+        Mockito.verify(this.fieldConfigPart).withStringPatternResolver(Mockito.any());
+        Mockito.verify(this.fieldConfigPart).withStringMinLengthResolver(Mockito.any());
+        Mockito.verify(this.fieldConfigPart).withStringMaxLengthResolver(Mockito.any());
 
         Mockito.verify(this.methodConfigPart).withTitleResolver(Mockito.any());
         Mockito.verify(this.methodConfigPart).withDescriptionResolver(Mockito.any());
@@ -88,6 +94,9 @@ public class AddonModuleTest {
         Mockito.verify(this.methodConfigPart).withNumberInclusiveMaximumResolver(Mockito.any());
         Mockito.verify(this.methodConfigPart).withNumberExclusiveMinimumResolver(Mockito.any());
         Mockito.verify(this.methodConfigPart).withNumberExclusiveMaximumResolver(Mockito.any());
+        Mockito.verify(this.methodConfigPart).withStringPatternResolver(Mockito.any());
+        Mockito.verify(this.methodConfigPart).withStringMinLengthResolver(Mockito.any());
+        Mockito.verify(this.methodConfigPart).withStringMaxLengthResolver(Mockito.any());
     }
 
     Object parametersForTestResolveTitle() {
@@ -389,5 +398,84 @@ public class AddonModuleTest {
         Mockito.verify(this.fieldConfigPart).withNumberMultipleOfResolver(captor.capture());
         BigDecimal formatValue = captor.getValue().apply(field);
         Assert.assertEquals(expectedMaximumExclusive, formatValue);
+    }
+
+
+    Object parametersForTestResolvePattern() {
+        return new Object[][]{
+                {"unannotatedField", null},
+                {"annotatedWithoutValueField", null},
+                {"annotatedWithoutValueGetterField", null},
+                {"annotatedField", "annotation with pattern 1"},
+                {"annotatedGetterField", "annotation with pattern 2"}
+        };
+    }
+
+    @Test
+    @Parameters
+    public void testResolvePattern(String fieldName, String expectedPattern) {
+        new AddonModule().applyToConfigBuilder(this.configBuilder);
+
+        TestType testType = new TestType(TestClassForResolvePattern.class);
+        FieldScope field = testType.getMemberField(fieldName);
+
+        ArgumentCaptor<ConfigFunction<FieldScope, String>> captor = ArgumentCaptor.forClass(ConfigFunction.class);
+        Mockito.verify(this.fieldConfigPart).withStringPatternResolver(captor.capture());
+        String pattern = captor.getValue().apply(field);
+        Assert.assertEquals(expectedPattern, pattern);
+    }
+
+    Object parametersForTestResolveMinLength() {
+        return new Object[][]{
+                {"unannotatedField", null},
+                {"annotatedWithoutValueField", null},
+                {"annotatedWithoutValueGetterField", null},
+                {"annotatedField", 1},
+                {"annotatedFieldNegatif", null},
+                {"annotatedFieldNull", null},
+                {"annotatedGetterField", 2},
+                {"annotatedGetterFieldNegatif", null},
+                {"annotatedGetterFieldNull", null}
+        };
+    }
+
+    @Test
+    @Parameters
+    public void testResolveMinLength(String fieldName, Integer expectedMinLength) {
+        new AddonModule().applyToConfigBuilder(this.configBuilder);
+
+        TestType testType = new TestType(TestClassForResolveMinLength.class);
+        FieldScope field = testType.getMemberField(fieldName);
+
+        ArgumentCaptor<ConfigFunction<FieldScope, Integer>> captor = ArgumentCaptor.forClass(ConfigFunction.class);
+        Mockito.verify(this.fieldConfigPart).withStringMinLengthResolver(captor.capture());
+        Integer minLength = captor.getValue().apply(field);
+        Assert.assertEquals(expectedMinLength, minLength);
+    }
+
+    Object parametersForTestResolveMaxLength() {
+        return new Object[][]{
+                {"unannotatedField", null},
+                {"annotatedWithoutValueField", null},
+                {"annotatedWithoutValueGetterField", null},
+                {"annotatedField", 1},
+                {"annotatedFieldMax", null},
+                {"annotatedGetterField", 2},
+                {"annotatedGetterFieldMax", null}
+        };
+    }
+
+    @Test
+    @Parameters
+    public void testResolveMaxLength(String fieldName, Integer expectedMaxLength) {
+        new AddonModule().applyToConfigBuilder(this.configBuilder);
+
+        TestType testType = new TestType(TestClassForResolveMaxLength.class);
+        FieldScope field = testType.getMemberField(fieldName);
+
+        ArgumentCaptor<ConfigFunction<FieldScope, Integer>> captor = ArgumentCaptor.forClass(ConfigFunction.class);
+        Mockito.verify(this.fieldConfigPart).withStringMaxLengthResolver(captor.capture());
+        Integer maxLength = captor.getValue().apply(field);
+        Assert.assertEquals(expectedMaxLength, maxLength);
     }
 }
