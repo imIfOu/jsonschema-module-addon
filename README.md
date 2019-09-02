@@ -1,6 +1,6 @@
 # Java JSON Schema Generation – Module Addon
 [![Build Status](https://travis-ci.com/imIfOu/jsonschema-module-addon.svg?branch=master)](https://travis-ci.com/imIfOu/jsonschema-module-addon)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.imIfOu/jsonschema-module-addon/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.imIfOu/jsonschema-module-addon)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.imifou/jsonschema-module-addon/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.imifou/jsonschema-module-addon)
 
 Module for the [victools/jsonschema-generator](https://github.com/victools/jsonschema-generator) – deriving JSON Schema attributes from annotations
 
@@ -20,7 +20,7 @@ Module for the [victools/jsonschema-generator](https://github.com/victools/jsons
 <dependency>
     <groupId>com.github.imifou</groupId>
     <artifactId>jsonschema-module-addon</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 </dependency>
 ```
 
