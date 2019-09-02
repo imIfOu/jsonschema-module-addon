@@ -1,6 +1,6 @@
 package com.github.imifou.jsonschema.module.addon;
 
-import com.github.imifou.jsonschema.module.addon.annotation.JSData;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.imifou.jsonschema.module.addon.annotation.JsonSchema;
 import com.github.victools.jsonschema.generator.FieldScope;
 import com.github.victools.jsonschema.generator.MemberScope;
@@ -10,10 +10,8 @@ import com.github.victools.jsonschema.generator.SchemaGeneratorConfigBuilder;
 import com.github.victools.jsonschema.generator.SchemaGeneratorConfigPart;
 
 import java.lang.annotation.Annotation;
-import java.util.Arrays;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class AddonModule implements Module {
 
@@ -28,9 +26,9 @@ public class AddonModule implements Module {
                 .withDescriptionResolver(this::resolveDescription)
                 .withStringFormatResolver(this::resolveFormat)
                 .withDefaultResolver(this::resolveDefault)
-                .withRequired(this::resolveRequired)
+                .withRequiredCheck(this::resolveRequired)
                 .withIgnoreCheck(this::resolveIgnore)
-                .withMetadata(this::resolveMetadata);
+                .withInstanceAttributeOverride(this::resolveMetadata);
     }
 
     private String resolveTitle(MemberScope<?, ?> member){
@@ -74,18 +72,13 @@ public class AddonModule implements Module {
                 .orElse(Boolean.FALSE);
     }
 
-    protected Map<String,String> resolveMetadata(MemberScope<?, ?> member){
-        return this.getAnnotationFromFieldOrGetter(member, JsonSchema.class)
+    protected void resolveMetadata(ObjectNode jsonSchemaAttributesNode, MemberScope<?, ?> member) {
+        this.getAnnotationFromFieldOrGetter(member, JsonSchema.class)
                 .map(JsonSchema::metadata)
-                .filter(jsData -> jsData.length > 0)
-                .flatMap(jsData -> Optional.of(
-                            Arrays.stream(jsData)
-                            .filter(data -> !data.key().isEmpty())
-                            .filter(data -> !data.value().isEmpty())
-                            .collect(Collectors.toMap(JSData::key,JSData::value))
-                        )
-                )
-                .orElse(null);
+                .ifPresent(metaData -> Stream.of(metaData)
+                        .filter(data -> !data.key().isEmpty())
+                        .filter(data -> !data.value().isEmpty())
+                        .forEach(data -> jsonSchemaAttributesNode.put(data.key(), data.value())));
     }
 
     /**

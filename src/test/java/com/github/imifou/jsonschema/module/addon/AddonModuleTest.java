@@ -1,5 +1,7 @@
 package com.github.imifou.jsonschema.module.addon;
 
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.imifou.jsonschema.module.addon.mock.TestClassForResolveDefault;
 import com.github.imifou.jsonschema.module.addon.mock.TestClassForResolveDescription;
 import com.github.imifou.jsonschema.module.addon.mock.TestClassForResolveFormat;
@@ -9,6 +11,7 @@ import com.github.imifou.jsonschema.module.addon.mock.TestClassForResolveRequire
 import com.github.imifou.jsonschema.module.addon.mock.TestClassForResolveTitle;
 import com.github.victools.jsonschema.generator.ConfigFunction;
 import com.github.victools.jsonschema.generator.FieldScope;
+import com.github.victools.jsonschema.generator.InstanceAttributeOverride;
 import com.github.victools.jsonschema.generator.MethodScope;
 import com.github.victools.jsonschema.generator.SchemaGeneratorConfigBuilder;
 import com.github.victools.jsonschema.generator.SchemaGeneratorConfigPart;
@@ -21,8 +24,6 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Predicate;
 
 /**
@@ -60,17 +61,17 @@ public class AddonModuleTest {
         Mockito.verify(this.fieldConfigPart).withDescriptionResolver(Mockito.any());
         Mockito.verify(this.fieldConfigPart).withStringFormatResolver(Mockito.any());
         Mockito.verify(this.fieldConfigPart).withDefaultResolver(Mockito.any());
-        Mockito.verify(this.fieldConfigPart).withRequired(Mockito.any());
+        Mockito.verify(this.fieldConfigPart).withRequiredCheck(Mockito.any());
         Mockito.verify(this.fieldConfigPart).withIgnoreCheck(Mockito.any());
-        Mockito.verify(this.fieldConfigPart).withMetadata(Mockito.any());
+        Mockito.verify(this.fieldConfigPart).withInstanceAttributeOverride(Mockito.any());
 
         Mockito.verify(this.methodConfigPart).withTitleResolver(Mockito.any());
         Mockito.verify(this.methodConfigPart).withDescriptionResolver(Mockito.any());
         Mockito.verify(this.methodConfigPart).withStringFormatResolver(Mockito.any());
         Mockito.verify(this.methodConfigPart).withDefaultResolver(Mockito.any());
-        Mockito.verify(this.methodConfigPart).withRequired(Mockito.any());
+        Mockito.verify(this.methodConfigPart).withRequiredCheck(Mockito.any());
         Mockito.verify(this.methodConfigPart).withIgnoreCheck(Mockito.any());
-        Mockito.verify(this.methodConfigPart).withMetadata(Mockito.any());
+        Mockito.verify(this.methodConfigPart).withInstanceAttributeOverride(Mockito.any());
     }
 
     Object parametersForTestResolveTitle() {
@@ -136,9 +137,9 @@ public class AddonModuleTest {
         TestType testType = new TestType(TestClassForResolveDefault.class);
         FieldScope field = testType.getMemberField(fieldName);
 
-        ArgumentCaptor<ConfigFunction<FieldScope, String>> captor = ArgumentCaptor.forClass(ConfigFunction.class);
+        ArgumentCaptor<ConfigFunction<FieldScope, Object>> captor = ArgumentCaptor.forClass(ConfigFunction.class);
         Mockito.verify(this.fieldConfigPart).withDefaultResolver(captor.capture());
-        String defaultValue = captor.getValue().apply(field);
+        Object defaultValue = captor.getValue().apply(field);
         Assert.assertEquals(expectedDefaultValue, defaultValue);
     }
 
@@ -183,7 +184,7 @@ public class AddonModuleTest {
         FieldScope field = testType.getMemberField(fieldName);
 
         ArgumentCaptor<Predicate<FieldScope>> captor = ArgumentCaptor.forClass(Predicate.class);
-        Mockito.verify(this.fieldConfigPart).withRequired(captor.capture());
+        Mockito.verify(this.fieldConfigPart).withRequiredCheck(captor.capture());
         boolean result = captor.getValue().test(field);
         Assert.assertEquals(expectedRequired, result);
     }
@@ -213,24 +214,26 @@ public class AddonModuleTest {
 
     Object parametersForTestResolveMetadata() {
         return new Object[][]{
-                {"unannotatedField", null},
-                {"annotatedWithoutValueField", null},
-                {"annotatedWithoutValueGetterField", null},
-                {"annotatedField", new HashMap<String,String>() {{put("a", "b");}}},
-                {"annotatedGetterField", new HashMap<String,String>() {{put("a", "b");put("c", "d");}}}
+                {"unannotatedField", "{}"},
+                {"annotatedWithoutValueField", "{}"},
+                {"annotatedWithoutValueGetterField", "{}"},
+                {"annotatedField", "{\"a\":\"b\"}"},
+                {"annotatedGetterField", "{\"a\":\"b\",\"c\":\"d\"}"}
         };
     }
     @Test
     @Parameters
-    public void testResolveMetadata(String fieldName, Map<String,String> expectedMetadata){
+    public void testResolveMetadata(String fieldName, String expectedMetadata) {
         new AddonModule().applyToConfigBuilder(this.configBuilder);
 
         TestType testType = new TestType(TestClassForResolveMetadata.class);
         FieldScope field = testType.getMemberField(fieldName);
 
-        ArgumentCaptor<ConfigFunction<FieldScope, Map<String,String>>> captor = ArgumentCaptor.forClass(ConfigFunction.class);
-        Mockito.verify(this.fieldConfigPart).withMetadata(captor.capture());
-        Map<String,String> result = captor.getValue().apply(field);
-        Assert.assertEquals(expectedMetadata, result);
+        ArgumentCaptor<InstanceAttributeOverride<FieldScope>> captor = ArgumentCaptor.forClass(InstanceAttributeOverride.class);
+        Mockito.verify(this.fieldConfigPart).withInstanceAttributeOverride(captor.capture());
+        ObjectNode node = JsonNodeFactory.instance.objectNode();
+        captor.getValue().overrideInstanceAttributes(node, field);
+
+        Assert.assertEquals(expectedMetadata, node.toString());
     }
 }
