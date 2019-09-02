@@ -12,7 +12,7 @@ Module for the [victools/jsonschema-generator](https://github.com/victools/jsons
 * Indicate a minimum value on number property(field/method) `@JsonSchema(min=0)`
 * Indicate a maximum value on number property(field/method) `@JsonSchema(max=10)`
 * Indicate a minimum exclusive value on number property(field/method) `@JsonSchema(min=0, exclusiveMin = true)`
-* Indicate a maximum exclusive value on number property(field/method) `@JsonSchema(max=10, exclusiveMin = false)`
+* Indicate a maximum exclusive value on number property(field/method) `@JsonSchema(max=10, exclusiveMax = true)`
 * Indicate a multiple of value on number property(field/method) `@JsonSchema(multipleOf=2)`
 * Indicate a default value on property(field/method) `@JsonSchema(defaultValue="...")`
 * Indicate if property is required(field/method)  `@JsonSchema(required=true)`
