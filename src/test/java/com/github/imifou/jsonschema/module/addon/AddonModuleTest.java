@@ -6,7 +6,12 @@ import com.github.imifou.jsonschema.module.addon.mock.TestClassForResolveDefault
 import com.github.imifou.jsonschema.module.addon.mock.TestClassForResolveDescription;
 import com.github.imifou.jsonschema.module.addon.mock.TestClassForResolveFormat;
 import com.github.imifou.jsonschema.module.addon.mock.TestClassForResolveIgnore;
+import com.github.imifou.jsonschema.module.addon.mock.TestClassForResolveMaximum;
+import com.github.imifou.jsonschema.module.addon.mock.TestClassForResolveMaximumExclusive;
 import com.github.imifou.jsonschema.module.addon.mock.TestClassForResolveMetadata;
+import com.github.imifou.jsonschema.module.addon.mock.TestClassForResolveMinimum;
+import com.github.imifou.jsonschema.module.addon.mock.TestClassForResolveMinimumExclusive;
+import com.github.imifou.jsonschema.module.addon.mock.TestClassForResolveMultipleOf;
 import com.github.imifou.jsonschema.module.addon.mock.TestClassForResolveRequired;
 import com.github.imifou.jsonschema.module.addon.mock.TestClassForResolveTitle;
 import com.github.victools.jsonschema.generator.ConfigFunction;
@@ -24,6 +29,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
+import java.math.BigDecimal;
 import java.util.function.Predicate;
 
 /**
@@ -64,6 +70,11 @@ public class AddonModuleTest {
         Mockito.verify(this.fieldConfigPart).withRequiredCheck(Mockito.any());
         Mockito.verify(this.fieldConfigPart).withIgnoreCheck(Mockito.any());
         Mockito.verify(this.fieldConfigPart).withInstanceAttributeOverride(Mockito.any());
+        Mockito.verify(this.fieldConfigPart).withNumberMultipleOfResolver(Mockito.any());
+        Mockito.verify(this.fieldConfigPart).withNumberInclusiveMinimumResolver(Mockito.any());
+        Mockito.verify(this.fieldConfigPart).withNumberInclusiveMaximumResolver(Mockito.any());
+        Mockito.verify(this.fieldConfigPart).withNumberExclusiveMinimumResolver(Mockito.any());
+        Mockito.verify(this.fieldConfigPart).withNumberExclusiveMaximumResolver(Mockito.any());
 
         Mockito.verify(this.methodConfigPart).withTitleResolver(Mockito.any());
         Mockito.verify(this.methodConfigPart).withDescriptionResolver(Mockito.any());
@@ -72,6 +83,11 @@ public class AddonModuleTest {
         Mockito.verify(this.methodConfigPart).withRequiredCheck(Mockito.any());
         Mockito.verify(this.methodConfigPart).withIgnoreCheck(Mockito.any());
         Mockito.verify(this.methodConfigPart).withInstanceAttributeOverride(Mockito.any());
+        Mockito.verify(this.methodConfigPart).withNumberMultipleOfResolver(Mockito.any());
+        Mockito.verify(this.methodConfigPart).withNumberInclusiveMinimumResolver(Mockito.any());
+        Mockito.verify(this.methodConfigPart).withNumberInclusiveMaximumResolver(Mockito.any());
+        Mockito.verify(this.methodConfigPart).withNumberExclusiveMinimumResolver(Mockito.any());
+        Mockito.verify(this.methodConfigPart).withNumberExclusiveMaximumResolver(Mockito.any());
     }
 
     Object parametersForTestResolveTitle() {
@@ -235,5 +251,143 @@ public class AddonModuleTest {
         captor.getValue().overrideInstanceAttributes(node, field);
 
         Assert.assertEquals(expectedMetadata, node.toString());
+    }
+
+    Object parametersForTestResolveMinimum() {
+        return new Object[][]{
+                {"unannotatedField", null},
+                {"annotatedWithoutValueField", null},
+                {"annotatedWithoutValueGetterField", null},
+                {"annotatedField", new BigDecimal(1)},
+                {"annotatedFieldExclusive", null},
+                {"annotatedFieldInclusive", new BigDecimal(1)},
+                {"annotatedGetterField", new BigDecimal(2)},
+                {"annotatedGetterFieldExclusive", null},
+                {"annotatedGetterFieldInclusive", new BigDecimal(2)}
+        };
+    }
+
+    @Test
+    @Parameters
+    public void testResolveMinimum(String fieldName, BigDecimal expectedMinimum) {
+        new AddonModule().applyToConfigBuilder(this.configBuilder);
+
+        TestType testType = new TestType(TestClassForResolveMinimum.class);
+        FieldScope field = testType.getMemberField(fieldName);
+
+        ArgumentCaptor<ConfigFunction<FieldScope, BigDecimal>> captor = ArgumentCaptor.forClass(ConfigFunction.class);
+        Mockito.verify(this.fieldConfigPart).withNumberInclusiveMinimumResolver(captor.capture());
+        BigDecimal formatValue = captor.getValue().apply(field);
+        Assert.assertEquals(expectedMinimum, formatValue);
+    }
+
+    Object parametersForTestResolveMaximum() {
+        return new Object[][]{
+                {"unannotatedField", null},
+                {"annotatedWithoutValueField", null},
+                {"annotatedWithoutValueGetterField", null},
+                {"annotatedField", new BigDecimal(1)},
+                {"annotatedFieldExclusive", null},
+                {"annotatedFieldInclusive", new BigDecimal(1)},
+                {"annotatedGetterField", new BigDecimal(2)},
+                {"annotatedGetterFieldExclusive", null},
+                {"annotatedGetterFieldInclusive", new BigDecimal(2)}
+        };
+    }
+
+    @Test
+    @Parameters
+    public void testResolveMaximum(String fieldName, BigDecimal expectedMaximum) {
+        new AddonModule().applyToConfigBuilder(this.configBuilder);
+
+        TestType testType = new TestType(TestClassForResolveMaximum.class);
+        FieldScope field = testType.getMemberField(fieldName);
+
+        ArgumentCaptor<ConfigFunction<FieldScope, BigDecimal>> captor = ArgumentCaptor.forClass(ConfigFunction.class);
+        Mockito.verify(this.fieldConfigPart).withNumberInclusiveMaximumResolver(captor.capture());
+        BigDecimal formatValue = captor.getValue().apply(field);
+        Assert.assertEquals(expectedMaximum, formatValue);
+    }
+
+    Object parametersForTestResolveMinimumExclusive() {
+        return new Object[][]{
+                {"unannotatedField", null},
+                {"annotatedWithoutValueField", null},
+                {"annotatedWithoutValueGetterField", null},
+                {"annotatedField", null},
+                {"annotatedFieldExclusive", new BigDecimal(1)},
+                {"annotatedFieldInclusive", null},
+                {"annotatedGetterField", null},
+                {"annotatedGetterFieldExclusive", new BigDecimal(2)},
+                {"annotatedGetterFieldInclusive", null}
+        };
+    }
+
+    @Test
+    @Parameters
+    public void testResolveMinimumExclusive(String fieldName, BigDecimal expectedMinimumExclusive) {
+        new AddonModule().applyToConfigBuilder(this.configBuilder);
+
+        TestType testType = new TestType(TestClassForResolveMinimumExclusive.class);
+        FieldScope field = testType.getMemberField(fieldName);
+
+        ArgumentCaptor<ConfigFunction<FieldScope, BigDecimal>> captor = ArgumentCaptor.forClass(ConfigFunction.class);
+        Mockito.verify(this.fieldConfigPart).withNumberExclusiveMinimumResolver(captor.capture());
+        BigDecimal formatValue = captor.getValue().apply(field);
+        Assert.assertEquals(expectedMinimumExclusive, formatValue);
+    }
+
+    Object parametersForTestResolveMaximumExclusive() {
+        return new Object[][]{
+                {"unannotatedField", null},
+                {"annotatedWithoutValueField", null},
+                {"annotatedWithoutValueGetterField", null},
+                {"annotatedField", null},
+                {"annotatedFieldExclusive", new BigDecimal(1)},
+                {"annotatedFieldInclusive", null},
+                {"annotatedGetterField", null},
+                {"annotatedGetterFieldExclusive", new BigDecimal(2)},
+                {"annotatedGetterFieldInclusive", null}
+        };
+    }
+
+    @Test
+    @Parameters
+    public void testResolveMaximumExclusive(String fieldName, BigDecimal expectedMaximumExclusive) {
+        new AddonModule().applyToConfigBuilder(this.configBuilder);
+
+        TestType testType = new TestType(TestClassForResolveMaximumExclusive.class);
+        FieldScope field = testType.getMemberField(fieldName);
+
+        ArgumentCaptor<ConfigFunction<FieldScope, BigDecimal>> captor = ArgumentCaptor.forClass(ConfigFunction.class);
+        Mockito.verify(this.fieldConfigPart).withNumberExclusiveMaximumResolver(captor.capture());
+        BigDecimal formatValue = captor.getValue().apply(field);
+        Assert.assertEquals(expectedMaximumExclusive, formatValue);
+    }
+
+    Object parametersForTestResolveMultipleOf() {
+        return new Object[][]{
+                {"unannotatedField", null},
+                {"annotatedWithoutValueField", null},
+                {"annotatedWithoutValueGetterField", null},
+                {"annotatedField", new BigDecimal(1)},
+                {"annotatedFieldBadValue", null},
+                {"annotatedGetterField", new BigDecimal(2)},
+                {"annotatedGetterFieldBadValue", null},
+        };
+    }
+
+    @Test
+    @Parameters
+    public void testResolveMultipleOf(String fieldName, BigDecimal expectedMaximumExclusive) {
+        new AddonModule().applyToConfigBuilder(this.configBuilder);
+
+        TestType testType = new TestType(TestClassForResolveMultipleOf.class);
+        FieldScope field = testType.getMemberField(fieldName);
+
+        ArgumentCaptor<ConfigFunction<FieldScope, BigDecimal>> captor = ArgumentCaptor.forClass(ConfigFunction.class);
+        Mockito.verify(this.fieldConfigPart).withNumberMultipleOfResolver(captor.capture());
+        BigDecimal formatValue = captor.getValue().apply(field);
+        Assert.assertEquals(expectedMaximumExclusive, formatValue);
     }
 }

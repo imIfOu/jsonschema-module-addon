@@ -10,6 +10,7 @@ import com.github.victools.jsonschema.generator.SchemaGeneratorConfigBuilder;
 import com.github.victools.jsonschema.generator.SchemaGeneratorConfigPart;
 
 import java.lang.annotation.Annotation;
+import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -31,7 +32,13 @@ public class AddonModule implements Module {
                 .withDefaultResolver(this::resolveDefault)
                 .withRequiredCheck(this::resolveRequired)
                 .withIgnoreCheck(this::resolveIgnore)
-                .withInstanceAttributeOverride(this::resolveMetadata);
+                .withInstanceAttributeOverride(this::resolveMetadata)
+                .withNumberMultipleOfResolver(this::resolveNumberMultipleOf)
+                .withNumberInclusiveMinimumResolver(this::resolveMinimum)
+                .withNumberInclusiveMaximumResolver(this::resolveMaximum)
+                .withNumberExclusiveMinimumResolver(this::resolveMinimumExclusive)
+                .withNumberExclusiveMaximumResolver(this::resolveMaximumExclusive)
+        ;
     }
 
     private String resolveTitle(MemberScope<?, ?> member){
@@ -82,6 +89,51 @@ public class AddonModule implements Module {
                         .filter(data -> !data.key().isEmpty())
                         .filter(data -> !data.value().isEmpty())
                         .forEach(data -> jsonSchemaAttributesNode.put(data.key(), data.value())));
+    }
+
+    protected BigDecimal resolveNumberMultipleOf(MemberScope<?, ?> member) {
+        return this.getAnnotationFromFieldOrGetter(member, JsonSchema.class)
+                .map(JsonSchema::multipleOf)
+                .filter(multipleOf -> multipleOf.doubleValue() != 0)
+                .map(BigDecimal::new)
+                .orElse(null);
+    }
+
+    protected BigDecimal resolveMinimum(MemberScope<?, ?> member) {
+        return this.getAnnotationFromFieldOrGetter(member, JsonSchema.class)
+                .filter(jsonSchema -> !jsonSchema.exclusiveMin())
+                .map(JsonSchema::min)
+                .filter(multipleOf -> multipleOf.doubleValue() != Double.MIN_VALUE)
+                .map(BigDecimal::new)
+                .orElse(null);
+    }
+
+    protected BigDecimal resolveMaximum(MemberScope<?, ?> member) {
+        return this.getAnnotationFromFieldOrGetter(member, JsonSchema.class)
+                .filter(jsonSchema -> !jsonSchema.exclusiveMax())
+                .map(JsonSchema::max)
+                .filter(multipleOf -> multipleOf.doubleValue() != Double.MAX_VALUE)
+                .map(BigDecimal::new)
+                .orElse(null);
+    }
+
+
+    protected BigDecimal resolveMinimumExclusive(MemberScope<?, ?> member) {
+        return this.getAnnotationFromFieldOrGetter(member, JsonSchema.class)
+                .filter(JsonSchema::exclusiveMin)
+                .map(JsonSchema::min)
+                .filter(multipleOf -> multipleOf.doubleValue() != Double.MIN_VALUE)
+                .map(BigDecimal::new)
+                .orElse(null);
+    }
+
+    protected BigDecimal resolveMaximumExclusive(MemberScope<?, ?> member) {
+        return this.getAnnotationFromFieldOrGetter(member, JsonSchema.class)
+                .filter(JsonSchema::exclusiveMax)
+                .map(JsonSchema::max)
+                .filter(multipleOf -> multipleOf.doubleValue() != Double.MAX_VALUE)
+                .map(BigDecimal::new)
+                .orElse(null);
     }
 
     /**
