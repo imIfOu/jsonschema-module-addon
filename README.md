@@ -1,6 +1,6 @@
 # Java JSON Schema Generation – Module Addon
 [![Build Status](https://travis-ci.com/imIfOu/jsonschema-module-addon.svg?branch=master)](https://travis-ci.com/imIfOu/jsonschema-module-addon)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.imifou/jsonschema-module-addon/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.imifou/jsonschema-module-addon)
+[![Maven Central](https://img.shields.io/maven-central/v/com.github.imifou/jsonschema-module-addon.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.github.imifou%22%20AND%20a:%22jsonschema-module-addon%22)
 
 Module for the [victools/jsonschema-generator](https://github.com/victools/jsonschema-generator) – deriving JSON Schema attributes from annotations
 
@@ -9,6 +9,9 @@ Module for the [victools/jsonschema-generator](https://github.com/victools/jsons
 * Indicate a title on property(field/method) `@JsonSchema(title="...")`
 * Indicate a description on property(field/method) `@JsonSchema(description="...")`
 * Indicate a format on string property(field/method) `@JsonSchema(format=TypeFormat.DATE)`
+* Indicate a pattern on string property(field/method) `@JsonSchema(pattern="...")`
+* Indicate a minimum length on string property(field/method) `@JsonSchema(minLength="...")`
+* Indicate a maximum length on string property(field/method) `@JsonSchema(maxLength="...")`
 * Indicate a minimum value on number property(field/method) `@JsonSchema(min=0)`
 * Indicate a maximum value on number property(field/method) `@JsonSchema(max=10)`
 * Indicate a minimum exclusive value on number property(field/method) `@JsonSchema(min=0, exclusiveMin = true)`
@@ -25,7 +28,7 @@ Module for the [victools/jsonschema-generator](https://github.com/victools/jsons
 <dependency>
     <groupId>com.github.imifou</groupId>
     <artifactId>jsonschema-module-addon</artifactId>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
 </dependency>
 ```
 
