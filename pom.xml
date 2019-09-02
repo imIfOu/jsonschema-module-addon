@@ -3,13 +3,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <name>Java JSON Schema Generator Module – Addon</name>
-    <description>Module for the jsonschema-generator – deriving JSON Schema attributes from annotations</description>
+    <name>Java JSON Schema Generator Module - Addon</name>
+    <description>Module for the jsonschema-generator - deriving JSON Schema attributes from annotations</description>
     <url>https://github.com/imIfOu/jsonschema-module-addon</url>
 
     <groupId>com.github.imifou</groupId>
     <artifactId>jsonschema-module-addon</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
 
     <licenses>
         <license>
@@ -29,6 +29,13 @@
         <url>https://github.com/imIfOu/jsonschema-module-addon</url>
         <tag>HEAD</tag>
     </scm>
+
+    <developers>
+        <developer>
+            <id>imIfOu</id>
+            <name>Florian DIDIER</name>
+        </developer>
+    </developers>
     
     <distributionManagement>
         <snapshotRepository>
@@ -56,6 +63,7 @@
             <groupId>com.github.victools</groupId>
             <artifactId>jsonschema-generator</artifactId>
             <version>${version.generator}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -106,15 +114,36 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.6</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.sonatype.plugins</groupId>
                 <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.6.7</version>
+                <version>1.6.8</version>
                 <extensions>true</extensions>
                 <configuration>
                     <serverId>ossrh</serverId>
                     <nexusUrl>https://oss.sonatype.org/</nexusUrl>
                     <autoReleaseAfterClose>true</autoReleaseAfterClose>
                 </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>commons-codec</groupId>
+                        <artifactId>commons-codec</artifactId>
+                        <version>1.13</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>

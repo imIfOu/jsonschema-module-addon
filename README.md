@@ -20,7 +20,7 @@ Module for the [victools/jsonschema-generator](https://github.com/victools/jsons
 <dependency>
     <groupId>com.github.imifou</groupId>
     <artifactId>jsonschema-module-addon</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
 </dependency>
 ```
 
