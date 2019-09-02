@@ -8,9 +8,14 @@ Module for the [victools/jsonschema-generator](https://github.com/victools/jsons
 
 * Indicate a title on property(field/method) `@JsonSchema(title="...")`
 * Indicate a description on property(field/method) `@JsonSchema(description="...")`
-* Indicate a type on property(field/method) `@JsonSchema(format=TypeFormat.DATE)`
+* Indicate a format on string property(field/method) `@JsonSchema(format=TypeFormat.DATE)`
+* Indicate a minimum value on number property(field/method) `@JsonSchema(min=0)`
+* Indicate a maximum value on number property(field/method) `@JsonSchema(max=10)`
+* Indicate a minimum exclusive value on number property(field/method) `@JsonSchema(min=0, exclusiveMin = true)`
+* Indicate a maximum exclusive value on number property(field/method) `@JsonSchema(max=10, exclusiveMin = false)`
+* Indicate a multiple of value on number property(field/method) `@JsonSchema(multipleOf=2)`
 * Indicate a default value on property(field/method) `@JsonSchema(defaultValue="...")`
-* Indicate if property is required(field/method)  `@JsonSchema(required=true)`
+* Indicate if property is required(field/method)  `@JsonSchema(required=true)
 * Optionally ignore a property(field/method) `@JsonSchema(ignore=true)`
 * Indicate new metadata(field/method) `@JsonSchema(metadata={@JSData(key="...",value="...")})`
 
@@ -20,7 +25,7 @@ Module for the [victools/jsonschema-generator](https://github.com/victools/jsons
 <dependency>
     <groupId>com.github.imifou</groupId>
     <artifactId>jsonschema-module-addon</artifactId>
-    <version>1.0.1</version>
+    <version>1.1.0</version>
 </dependency>
 ```
 
