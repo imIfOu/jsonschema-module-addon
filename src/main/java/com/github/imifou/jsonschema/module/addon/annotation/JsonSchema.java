@@ -7,15 +7,24 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * JsonSchema annotation
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.METHOD})
 public @interface JsonSchema {
 
     String title() default "";
+
     String description() default "";
+
     TypeFormat format() default TypeFormat.NONE;
+
     String defaultValue() default "";
+
     boolean required() default false;
+
     boolean ignore() default false;
+
     JSData[] metadata() default {};
 }

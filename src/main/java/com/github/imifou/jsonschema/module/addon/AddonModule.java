@@ -13,6 +13,9 @@ import java.lang.annotation.Annotation;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+/**
+ * Addon module for Json schema annotation
+ */
 public class AddonModule implements Module {
 
     @Override

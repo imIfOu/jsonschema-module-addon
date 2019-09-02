@@ -1,5 +1,8 @@
 package com.github.imifou.jsonschema.module.addon;
 
+/**
+ * Enum all types for string format
+ */
 public enum TypeFormat {
 
     DATE("date"),
