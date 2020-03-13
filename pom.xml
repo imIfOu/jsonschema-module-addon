@@ -9,7 +9,7 @@
 
     <groupId>com.github.imifou</groupId>
     <artifactId>jsonschema-module-addon</artifactId>
-    <version>1.2.0</version>
+    <version>1.2.1</version>
 
     <licenses>
         <license>
@@ -52,7 +52,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <version.generator>3.2.0</version.generator>
+        <version.generator>4.1.0</version.generator>
         <version.junit>4.12</version.junit>
         <version.junitparams>1.1.1</version.junitparams>
         <version.mockito>2.27.0</version.mockito>

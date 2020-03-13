@@ -28,7 +28,7 @@ Module for the [victools/jsonschema-generator](https://github.com/victools/jsons
 <dependency>
     <groupId>com.github.imifou</groupId>
     <artifactId>jsonschema-module-addon</artifactId>
-    <version>1.2.0</version>
+    <version>1.2.1</version>
 </dependency>
 ```
 
